@@ -1,10 +1,8 @@
 import json
-
 from django.test import TestCase, Client
 
 
 class CalculatorTestCase(TestCase):
-
     def setUp(self):
         self.client = Client()
 
