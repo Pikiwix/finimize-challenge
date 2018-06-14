@@ -1,52 +1,112 @@
-import React, { Component } from "react"
-import CurrencyInput from "./CurrencyInput"
-import SliderInput from "./SliderInput"
-import DisplayGraph from "./DisplayGraph"
-import "./InputGraphSection.css"
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import DisplayGraph from './DisplayGraph'
+import './InputGraphSection.css'
+import './CurrencyInput.css'
+import './SliderInput.css'
 
-export default class InputGraphSection extends Component {
-  render() {
-    const { result } = this.props
+class InputGraphSection extends Component {
+  constructor (props) {
+    super(props)
 
+    this.parseCalculationData = this.parseCalculationData.bind(this)
+  }
+
+  parseCalculationData () {
+    if (!this.props.calculationData) {
+      return []
+    }
+    return this.props.calculationData.results.map((elem, index) => {
+      return {
+        period: index,
+        amount: elem
+      }
+    })
+  }
+
+  render () {
+    const {
+      calculationData,
+      handleChangeFunction,
+      interestPaymentOccurrence,
+      interestRate,
+      loading,
+      savingsAmount,
+      savingsPerMonth
+    } = this.props
+    console.log(loading)
     return (
       <div>
-        <div className="financial-inputs">
-          <p className="input-label">How much have you saved?</p>
-          <CurrencyInput defaultValue={0} />
-
-          <p className="input-label">How much will you save each month?</p>
-          <CurrencyInput defaultValue={0} />
-
-          <p className="input-label">
+        <div className='financial-inputs'>
+          <p className='input-label'>How much have you saved?</p>
+          <div className={`currency-input ${savingsAmount !== undefined ? 'default-value' : ''}`}>
+            <span>£</span>
+            <input
+              id={'savingsAmount'}
+              type='text'
+              value={savingsAmount}
+              onChange={handleChangeFunction} />
+          </div>
+          <p className='input-label'>How much will you save each month?</p>
+          <div className={`currency-input ${savingsAmount !== undefined ? 'default-value' : ''}`}>
+            <span>£</span>
+            <input
+              id={'savingsPerMonth'}
+              type='text'
+              value={savingsPerMonth}
+              onChange={handleChangeFunction} />
+          </div>
+          <p className='input-label'>
             How much interest will you earn per year?
           </p>
-          <SliderInput defaultValue={4} />
+          <div className='fmz-slider'>
+            <p>{interestRate}%</p>
+            <input
+              id={'interestRate'}
+              type='range'
+              value={interestRate}
+              min={0}
+              max={10}
+              step={0.25}
+              onChange={handleChangeFunction} />
+          </div>
+          <select id={'interestPaymentOccurrence'} value={interestPaymentOccurrence} onChange={handleChangeFunction} >
+            <option value={1}>Monthly</option>
+            <option value={4}>Quarterly</option>
+            <option value={12}>Yearly</option>
+          </select>
         </div>
-        <div className="financial-display">
-          {/*We have included some sample data here, you will need to replace this
-            with your own. Feel free to change the data structure if you wish.*/}
-          <DisplayGraph
-            data={[
-              {
-                month: 1,
-                amount: 500
-              },
-              {
-                month: 2,
-                amount: 700
-              },
-              {
-                month: 3,
-                amount: 1000
-              },
-              {
-                month: 4,
-                amount: 1500
+        <div className='financial-display'>
+          {!loading
+            ? <React.Fragment>
+              {calculationData
+                ? <DisplayGraph data={this.parseCalculationData()} />
+                : <h3>No data to show</h3>
               }
-            ]}
-          />
+            </React.Fragment>
+            : 'Loading ...'
+          }
         </div>
       </div>
     )
   }
 }
+
+InputGraphSection.propTypes = {
+  calculationData: PropTypes.object,
+  handleChangeFunction: PropTypes.func.isRequired,
+  interestRate: PropTypes.number,
+  interestPaymentOccurrence: PropTypes.number,
+  loading: PropTypes.bool.isRequired,
+  savingsAmount: PropTypes.number,
+  savingsPerMonth: PropTypes.number
+}
+
+const mapStateToProps = (state) => {
+  return {
+    loading: state.ui.loading
+  }
+}
+
+export default connect(mapStateToProps, null)(InputGraphSection)

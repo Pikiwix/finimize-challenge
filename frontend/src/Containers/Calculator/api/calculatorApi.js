@@ -1,9 +1,6 @@
-import request from "axios"
+import axios from 'axios'
+import apiIndex from '../../../api/apiIndex'
 
-export const calculate = (savingsAmount, interestRate) => {
-	return request
-		.post("/calculate/", {
-			savingsAmount,
-			interestRate
-		})
+export const calculate = (data) => {
+  return axios.post(`${apiIndex.commons.baseUrl}/calculate/`, data)
 }
