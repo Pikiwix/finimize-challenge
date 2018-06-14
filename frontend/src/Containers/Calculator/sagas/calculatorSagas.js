@@ -10,7 +10,7 @@ export function * getCalculation (action) {
     yield put({type: actionTypes.CALCULATOR_SET_CALCULATION, payload: calculations.data})
     yield put({type: actionTypes.HIDE_LOADER})
   } catch (err) {
-    yield put({type: actionTypes.HIDE_LOADER})
     yield put({type: actionTypes.CALCULATOR_GET_CALCULATION_ERROR})
+    yield put({type: actionTypes.HIDE_LOADER})
   }
 }

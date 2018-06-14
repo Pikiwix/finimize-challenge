@@ -28,6 +28,7 @@ class InputGraphSection extends Component {
   render () {
     const {
       calculationData,
+      errors,
       handleChangeFunction,
       interestPaymentOccurrence,
       interestRate,
@@ -35,7 +36,6 @@ class InputGraphSection extends Component {
       savingsAmount,
       savingsPerMonth
     } = this.props
-    console.log(loading)
     return (
       <div>
         <div className='financial-inputs'>
@@ -77,17 +77,20 @@ class InputGraphSection extends Component {
             <option value={12}>Yearly</option>
           </select>
         </div>
-        <div className='financial-display'>
-          {!loading
-            ? <React.Fragment>
-              {calculationData
-                ? <DisplayGraph data={this.parseCalculationData()} />
-                : <h3>No data to show</h3>
-              }
-            </React.Fragment>
-            : 'Loading ...'
-          }
-        </div>
+        {!errors
+          ? <div className='financial-display'>
+            {!loading
+              ? <React.Fragment>
+                {calculationData
+                  ? <DisplayGraph data={this.parseCalculationData()} />
+                  : <h3>No data to show</h3>
+                }
+              </React.Fragment>
+              : 'Loading ...'
+            }
+          </div>
+          : <div style={{color: 'red', fontWeight: 'bold'}}>{errors}</div>
+        }
       </div>
     )
   }
@@ -95,6 +98,7 @@ class InputGraphSection extends Component {
 
 InputGraphSection.propTypes = {
   calculationData: PropTypes.object,
+  errors: PropTypes.string,
   handleChangeFunction: PropTypes.func.isRequired,
   interestRate: PropTypes.number,
   interestPaymentOccurrence: PropTypes.number,
@@ -105,6 +109,7 @@ InputGraphSection.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
+    errors: state.calculator.errors,
     loading: state.ui.loading
   }
 }
