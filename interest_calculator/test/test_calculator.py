@@ -1,10 +1,8 @@
 import json
-
 from django.test import TestCase, Client
 
 
 class CalculatorTestCase(TestCase):
-
     def setUp(self):
         self.client = Client()
 
@@ -18,7 +16,7 @@ class CalculatorTestCase(TestCase):
         response = self.client.post('/calculate/', data, 'json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        self.assertEqual(data['total'], 793943)
+        self.assertEqual(data['total'], 778280)
 
     def test_calculate_function_quarterly_payment(self):
         data = json.dumps({
@@ -30,7 +28,7 @@ class CalculatorTestCase(TestCase):
         response = self.client.post('/calculate/', data, 'json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        self.assertEqual(data['total'], 18604)
+        self.assertEqual(data['total'], 18380)
 
     def test_calculate_function_yearly_payment(self):
         data = json.dumps({
@@ -42,7 +40,7 @@ class CalculatorTestCase(TestCase):
         response = self.client.post('/calculate/', data, 'json')
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
-        self.assertEqual(data['total'], 9673)
+        self.assertEqual(data['total'], 9458)
 
     def test_calculate_function_bad_request(self):
         response = self.client.post('/calculate/')

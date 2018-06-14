@@ -25,7 +25,7 @@ def calculate(request):
                                             interest_payment_occurrence)
         data = {
             "results": spreadsheet,
-            "total": round(spreadsheet[list(spreadsheet.keys())[-1]])
+            "total": round(spreadsheet[len(spreadsheet) - 1])
         }
         return JsonResponse(data)
     except json.JSONDecodeError:
